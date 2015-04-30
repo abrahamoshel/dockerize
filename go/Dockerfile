@@ -1,0 +1,23 @@
+# Dockerfile for a Rails application using Nginx and Unicorn
+
+# Use base image
+FROM abrahamoshel/base:latest
+MAINTAINER Abraham Oshel <abraham.oshel@gmail.com>
+
+# Download go src into /usr/src
+ENV GOLANG_VERSION 1.4.2
+RUN curl -sSL https://golang.org/dl/go$GOLANG_VERSION.src.tar.gz \
+    | tar -v -C /usr/src -xz
+
+# Run make on go src
+RUN cd /usr/src/go/src && \
+    ./make.bash --no-clean 2>&1
+
+# Add go to PATH
+ENV PATH /usr/src/go/bin:$PATH
+
+# Setup Go enviroment
+RUN mkdir -p /opt/go/src /opt/go/bin && \
+    chmod -R 775 /opt/go
+ENV GOPATH /opt/go
+ENV PATH /opt/go/bin:$PATH
